@@ -1,4 +1,8 @@
 # Workflow Ops
+![views](https://komarev.com/ghpvc/?username=matheusandrade&repo=https://github.com/Monzphere/WorkflowOps) 
+![Stars](https://img.shields.io/github/stars/Monzphere/WorkflowOps?style=social)
+![Forks](https://img.shields.io/github/forks/Monzphere/WorkflowOps?style=social)
+![Issues](https://img.shields.io/github/issues/Monzphere/WorkflowOps)
 
 Zabbix module that provides a visual correlation view of Problems, Triggers and Actions. The workflow shows the relationship Host → Item → Trigger → Problem → Actions → Media types → Recipients.
 
