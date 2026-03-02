@@ -105,7 +105,7 @@ function makeTagsCompact(array $tags): ?CDiv {
 	}
 	$count = count($tags);
 	$wrap = (new CDiv())->addClass('mnz-workflow-card-tags-compact mnz-workflow-tags-trigger');
-	$wrap->addItem((new CSpan())->addClass(ZBX_ICON_FILTER)->addClass('mnz-workflow-card-icon'));
+	$wrap->addItem((new CSpan())->addClass(ZBX_ICON_CIRCLE_INFO)->addClass('mnz-workflow-card-icon'));
 	$wrap->addItem((new CSpan((string) $count))->addClass('mnz-workflow-tags-badge'));
 	$wrap->setAttribute('data-tags-content', implode("\n", $lines));
 	$wrap->setAttribute('title', _('Click to view tags'));
