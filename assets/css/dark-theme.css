@@ -261,7 +261,7 @@
 	color: #9ca3af;
 	border-top-color: rgba(255, 255, 255, 0.1);
 }
-[theme="dark-theme"] .overlay-dialogue.mnz-workflow-ops-modal .overlay-dialogue-footer .mnz-workflow-modal-footer {
+[theme="dark-theme"] .overlay-dialogue.mnz-zabgraph-modal .overlay-dialogue-footer .mnz-workflow-modal-footer {
 	color: #9ca3af;
 }
 
@@ -321,4 +321,55 @@
 [theme="dark-theme"] .mnz-workflow-badge-period-same {
 	background: rgba(156, 163, 175, 0.15);
 	color: #9ca3af;
+}
+
+[theme="dark-theme"] .zg-legacy-workspace {
+	background-color: #101826;
+	background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+	background-size: 24px 24px;
+	border: 1px solid rgba(111, 180, 228, 0.2);
+	box-shadow: inset 0 0 0 1px rgba(143, 178, 207, 0.16), 0 18px 38px rgba(0, 0, 0, 0.4);
+}
+
+[theme="dark-theme"] .zg-ai-toolbar {
+	background: linear-gradient(90deg, #111c2a, #152636);
+	border-color: rgba(111, 180, 228, 0.25);
+	color: #dbe7f2;
+	box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+[theme="dark-theme"] .zg-ai-toolbar-actions .btn,
+[theme="dark-theme"] .zg-ai-toolbar-actions .btn-alt {
+	border-color: rgba(111, 180, 228, 0.35);
+	background: rgba(15, 29, 43, 0.72);
+	color: #dce9f2;
+}
+
+[theme="dark-theme"] .zg-ai-toolbar-actions .zg-layer-btn.is-active,
+[theme="dark-theme"] .zg-ai-toolbar-actions .btn#zg-replay-toggle.is-active {
+	background: linear-gradient(135deg, #2f90d8, #226896);
+	border-color: rgba(196, 228, 249, 0.8);
+	color: #ffffff;
+}
+
+[theme="dark-theme"] .zg-cytoscape-canvas {
+	background: radial-gradient(circle at 20% 20%, #17293a, #101826);
+	border-color: rgba(111, 180, 228, 0.2);
+	box-shadow: inset 0 0 0 1px rgba(143, 178, 207, 0.16), 0 18px 38px rgba(0, 0, 0, 0.4);
+}
+
+[theme="dark-theme"] .zg-ai-panel {
+	background: #121d2a;
+	border-color: rgba(111, 180, 228, 0.2);
+	color: #dce6ee;
+	box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+
+[theme="dark-theme"] .zg-ai-panel-title {
+	color: #9dc0db;
+}
+
+[theme="dark-theme"] .zg-ai-replay-status {
+	color: #8fb2cf;
 }

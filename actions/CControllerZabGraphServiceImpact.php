@@ -1,12 +1,12 @@
 <?php declare(strict_types = 0);
 
-namespace Modules\WorkflowOps\Actions;
+namespace Modules\ZabGraph\Actions;
 
 use API;
 use CController;
 use Exception;
 
-class CControllerWorkflowOpsServiceImpact extends CController {
+class CControllerZabGraphServiceImpact extends CController {
 
 	private static $sliCache = [];
 	private static $cacheExpiry = 300;

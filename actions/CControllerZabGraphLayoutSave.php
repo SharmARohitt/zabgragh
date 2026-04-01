@@ -1,6 +1,6 @@
 <?php declare(strict_types = 0);
 
-namespace Modules\WorkflowOps\Actions;
+namespace Modules\ZabGraph\Actions;
 
 use CController;
 use CControllerResponseData;
@@ -8,7 +8,7 @@ use CProfile;
 use CWebUser;
 use CRoleHelper;
 
-class CControllerWorkflowOpsLayoutSave extends CController {
+class CControllerZabGraphLayoutSave extends CController {
 
 	protected function init(): void {
 		$this->setPostContentType(self::POST_CONTENT_TYPE_JSON);
@@ -58,7 +58,7 @@ class CControllerWorkflowOpsLayoutSave extends CController {
 			}
 		}
 
-		CProfile::update('mnz.workflow.ops.layout', json_encode($sanitized), PROFILE_TYPE_STR);
+		CProfile::update('zg.zabgraph.layout', json_encode($sanitized), PROFILE_TYPE_STR);
 
 		$this->setResponse(new CControllerResponseData([
 			'main_block' => json_encode(['success' => ['title' => _('Layout saved')]])

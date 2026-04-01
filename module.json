@@ -1,0 +1,9 @@
+{
+  "id": "zabgraph",
+  "name": "ZabGraph",
+  "version": "1.0",
+  "namespace": "ZabGraph",
+  "author": "Rohit Sharma",
+  "entry": "manifest.json",
+  "zabbix_compatibility": "7.x"
+}

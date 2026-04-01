@@ -15,12 +15,15 @@ $wf_labels = [
 	'hint_month' => _('Click a month to see which days had the most incidents'),
 	'daily_distribution' => _('Daily distribution'),
 	'last_12_months' => _('Last 12 months'),
-	'developed_by' => _('Developed by MonZphere'),
+	'developed_by' => _('Developed by Rohit Sharma'),
 	'tags' => _('Tags')
 ];
 $wf_refresh_url = isset($wf_refresh_url) ? $wf_refresh_url : '';
 $wf_layout_save_url = isset($wf_layout_save_url) ? $wf_layout_save_url : '';
 $wf_analysis_url = isset($wf_analysis_url) ? $wf_analysis_url : '';
+$wf_graph_data_url = isset($wf_graph_data_url) ? $wf_graph_data_url : '';
+$wf_similar_incidents_url = isset($wf_similar_incidents_url) ? $wf_similar_incidents_url : '';
+$wf_eventid = isset($wf_eventid) ? $wf_eventid : '';
 $wf_csrf_token = CCsrfTokenHelper::get('item');
 ?>
 jQuery(document).ready(function() {
@@ -28,6 +31,9 @@ jQuery(document).ready(function() {
 	var wfRefreshUrl = <?= json_encode($wf_refresh_url) ?>;
 	var wfLayoutSaveUrl = <?= json_encode($wf_layout_save_url) ?>;
 	var wfAnalysisUrl = <?= json_encode($wf_analysis_url) ?>;
+	var wfGraphDataUrl = <?= json_encode($wf_graph_data_url) ?>;
+	var wfSimilarIncidentsUrl = <?= json_encode($wf_similar_incidents_url) ?>;
+	var wfEventid = <?= json_encode($wf_eventid) ?>;
 
 	function renderWorkflowSvg() {
 		var flow = document.querySelector('.mnz-workflow-flow-single');
@@ -498,7 +504,7 @@ jQuery(document).ready(function() {
 						imgW = (canvas.width * imgH) / canvas.height;
 					}
 					pdf.addImage(imgData, 'PNG', 10, 10, imgW, imgH);
-					pdf.save('workflow-ops-' + (new Date().toISOString().slice(0, 10)) + '.pdf');
+					pdf.save('zabgraph-' + (new Date().toISOString().slice(0, 10)) + '.pdf');
 				} catch (e) {
 					alert('PDF export failed: ' + (e.message || e));
 				}
@@ -540,7 +546,7 @@ jQuery(document).ready(function() {
 		}
 		var closeLabel = wfLabels.close || 'Close';
 		var headerLabel = (target && target.getAttribute && target.getAttribute('data-popover-header')) || wfLabels.actions || 'Actions';
-		pop.innerHTML = '<button type="button" class="btn-overlay-close" title="' + closeLabel.replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-actions-popover-header">' + headerLabel.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-actions-popover-body"></div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by MonZphere') + '</div>';
+		pop.innerHTML = '<button type="button" class="btn-overlay-close" title="' + closeLabel.replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-actions-popover-header">' + headerLabel.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-actions-popover-body"></div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by Rohit Sharma') + '</div>';
 		var body = pop.querySelector('.mnz-workflow-actions-popover-body');
 		body.innerHTML = contentEl.innerHTML;
 		jQuery(body).find('table').addClass('list-table');
@@ -608,7 +614,7 @@ jQuery(document).ready(function() {
 			html += '<li>' + jQuery('<div>').text(lines[i]).html() + '</li>';
 		}
 		html += '</ul>';
-		pop.innerHTML = '<button type="button" class="btn-overlay-close" title="' + closeLabel.replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-actions-popover-header">' + (wfLabels.tags || 'Tags').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-actions-popover-body">' + html + '</div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by MonZphere') + '</div>';
+		pop.innerHTML = '<button type="button" class="btn-overlay-close" title="' + closeLabel.replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-actions-popover-header">' + (wfLabels.tags || 'Tags').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-actions-popover-body">' + html + '</div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by Rohit Sharma') + '</div>';
 		pop.style.position = 'fixed';
 		pop.style.left = '50%';
 		pop.style.top = '50%';
@@ -673,7 +679,7 @@ jQuery(document).ready(function() {
 		}
 		var closeLabel = wfLabels.close || 'Close';
 		var headerLabel = wfLabels.analysis || 'Incident analysis';
-		pop.innerHTML = '<button type="button" class="btn-overlay-close" title="' + String(closeLabel).replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-actions-popover-header">' + String(headerLabel).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-actions-popover-body"><div class="mnz-workflow-analysis-loading">' + (wfLabels.loading || 'Loading...') + '</div></div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by MonZphere') + '</div>';
+		pop.innerHTML = '<button type="button" class="btn-overlay-close" title="' + String(closeLabel).replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-actions-popover-header">' + String(headerLabel).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-actions-popover-body"><div class="mnz-workflow-analysis-loading">' + (wfLabels.loading || 'Loading...') + '</div></div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by Rohit Sharma') + '</div>';
 		pop.style.position = 'fixed';
 		pop.style.left = '50%';
 		pop.style.top = '50%';
@@ -945,7 +951,7 @@ jQuery(document).ready(function() {
 		}
 		var closeLabel = wfLabels.close || 'Close';
 		var titleLabel = wfLabels.chart_expanded || 'Chart';
-		overlay.innerHTML = '<button type="button" class="btn-overlay-close" title="' + closeLabel.replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-chart-overlay-header">' + titleLabel.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-chart-overlay-body"><img alt="" class="mnz-workflow-chart-expanded" /></div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by MonZphere') + '</div>';
+		overlay.innerHTML = '<button type="button" class="btn-overlay-close" title="' + closeLabel.replace(/"/g, '&quot;') + '"></button><div class="mnz-workflow-chart-overlay-header">' + titleLabel.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div><div class="mnz-workflow-chart-overlay-body"><img alt="" class="mnz-workflow-chart-expanded" /></div><div class="mnz-workflow-modal-footer">' + (wfLabels.developed_by || 'Developed by Rohit Sharma') + '</div>';
 		overlay.querySelector('.mnz-workflow-chart-expanded').src = url;
 		overlay.style.position = 'fixed';
 		overlay.style.left = '50%';
@@ -1023,8 +1029,225 @@ jQuery(document).ready(function() {
 	}
 	window.mnzWorkflowRefresh = wfRefreshContent;
 
+	function initZabGraphAIWorkspace() {
+		if (!wfGraphDataUrl || !wfEventid) return;
+		var graphEl = document.getElementById('zg-cytoscape-canvas');
+		if (!graphEl || typeof cytoscape === 'undefined') return;
+
+		var state = {
+			activeLayer: 'merged',
+			payload: null,
+			cy: null,
+			replayTimer: null,
+			replayIndex: 0,
+			resizeObserver: null
+		};
+
+		function setActiveLayerButton(layer) {
+			jQuery('.zg-layer-btn').removeClass('is-active');
+			jQuery('.zg-layer-btn[data-zg-layer="' + layer + '"]').addClass('is-active');
+		}
+
+		function refreshGraphViewport() {
+			if (!state.cy) return;
+			state.cy.resize();
+			state.cy.fit(undefined, 30);
+		}
+
+		function statusClass(status) {
+			if (status === 'critical') return '#d63a44';
+			if (status === 'warning') return '#e6952b';
+			return '#2a9d5b';
+		}
+
+		function buildElements(layerData) {
+			var elements = [];
+			(layerData.nodes || []).forEach(function(node) {
+				elements.push({
+					data: {
+						id: node.id,
+						label: node.label,
+						status: node.status || 'healthy',
+						type: node.type || 'node'
+					}
+				});
+			});
+			(layerData.edges || []).forEach(function(edge, idx) {
+				elements.push({
+					data: {
+						id: 'e_' + idx + '_' + edge.source + '_' + edge.target,
+						source: edge.source,
+						target: edge.target,
+						label: edge.label || ''
+					}
+				});
+			});
+			return elements;
+		}
+
+		function renderGraph(layerName) {
+			if (!state.payload) return;
+			var layerData = layerName === 'merged' ? state.payload.merged : state.payload.layers[layerName];
+			if (!layerData) return;
+
+			if (state.cy) {
+				state.cy.destroy();
+			}
+
+			state.cy = cytoscape({
+				container: graphEl,
+				elements: buildElements(layerData),
+				style: [
+					{
+						selector: 'node',
+						style: {
+							'label': 'data(label)',
+							'background-color': function(ele) { return statusClass(ele.data('status')); },
+							'width': 28,
+							'height': 28,
+							'font-size': 10,
+							'color': '#dfe7ef',
+							'text-wrap': 'wrap',
+							'text-max-width': 120,
+							'text-valign': 'bottom',
+							'text-margin-y': 8
+						}
+					},
+					{
+						selector: 'edge',
+						style: {
+							'label': 'data(label)',
+							'curve-style': 'bezier',
+							'line-color': '#5e748d',
+							'target-arrow-color': '#5e748d',
+							'target-arrow-shape': 'triangle',
+							'arrow-scale': 0.8,
+							'font-size': 9,
+							'color': '#9bb0c4'
+						}
+					}
+				],
+				layout: {
+					name: layerName === 'timeline' ? 'breadthfirst' : 'cose',
+					animate: true,
+					fit: true,
+					padding: 30
+				}
+			});
+
+			setTimeout(refreshGraphViewport, 80);
+			setTimeout(refreshGraphViewport, 260);
+
+			state.cy.on('tap', 'node', function(evt) {
+				var node = evt.target.data();
+				document.getElementById('zg-ai-root-cause').textContent = node.label;
+				document.getElementById('zg-ai-explanation').textContent = 'Node type: ' + node.type + ' | status: ' + node.status;
+			});
+		}
+
+		function updatePanel(payload) {
+			var right = payload.right_panel || {};
+			document.getElementById('zg-ai-root-cause').textContent = right.root_cause || '-';
+			document.getElementById('zg-ai-confidence').textContent = Math.round((right.confidence || 0) * 100) + '%';
+			document.getElementById('zg-ai-explanation').textContent = right.explanation || '-';
+
+			var actions = document.getElementById('zg-ai-actions');
+			actions.innerHTML = '';
+			(right.fixes || []).forEach(function(action) {
+				var li = document.createElement('li');
+				li.textContent = action.title + ' [' + (action.priority || 'n/a') + ']';
+				actions.appendChild(li);
+			});
+		}
+
+		function loadSimilarIncidents() {
+			if (!wfSimilarIncidentsUrl) return;
+			jQuery.ajax({
+				url: wfSimilarIncidentsUrl + (wfSimilarIncidentsUrl.indexOf('?') >= 0 ? '&' : '?') + 'eventid=' + encodeURIComponent(wfEventid),
+				type: 'GET',
+				dataType: 'json'
+			}).done(function(resp) {
+				var list = document.getElementById('zg-ai-similar');
+				if (!list) return;
+				list.innerHTML = '';
+				if (!resp || !resp.success || !resp.incidents || !resp.incidents.length) {
+					var empty = document.createElement('li');
+					empty.textContent = 'No similar incidents detected';
+					list.appendChild(empty);
+					return;
+				}
+				resp.incidents.forEach(function(inc) {
+					var li = document.createElement('li');
+					li.textContent = '#' + inc.eventid + ' - ' + inc.name + ' (' + Math.round((inc.match_score || 0) * 100) + '%)';
+					list.appendChild(li);
+				});
+			});
+		}
+
+		function startReplay() {
+			if (!state.payload || !state.payload.incident_replay || !state.payload.incident_replay.frames) return;
+			var frames = state.payload.incident_replay.frames;
+			if (!frames.length) return;
+			clearInterval(state.replayTimer);
+			state.replayIndex = 0;
+			state.replayTimer = setInterval(function() {
+				var f = frames[state.replayIndex % frames.length];
+				var label = '[' + f.phase + '] ' + new Date(f.timestamp * 1000).toLocaleTimeString() + ' - ' + f.label;
+				document.getElementById('zg-replay-status').textContent = label;
+				state.replayIndex++;
+			}, 1200);
+			jQuery('#zg-replay-toggle').addClass('is-active').text('Pause replay');
+		}
+
+		function loadLayer(layer) {
+			state.activeLayer = layer;
+			setActiveLayerButton(layer);
+			jQuery.ajax({
+				url: wfGraphDataUrl + (wfGraphDataUrl.indexOf('?') >= 0 ? '&' : '?') + 'eventid=' + encodeURIComponent(wfEventid) + '&layer=' + encodeURIComponent(layer),
+				type: 'GET',
+				dataType: 'json'
+			}).done(function(payload) {
+				if (!payload || !payload.success) return;
+				state.payload = payload;
+				updatePanel(payload);
+				renderGraph(layer);
+				loadSimilarIncidents();
+			});
+		}
+
+		jQuery(document).off('click.zgLayer', '.zg-layer-btn').on('click.zgLayer', '.zg-layer-btn', function() {
+			loadLayer(jQuery(this).attr('data-zg-layer'));
+		});
+
+		jQuery('#zg-replay-toggle').off('click').on('click', function() {
+			if (state.replayTimer) {
+				clearInterval(state.replayTimer);
+				state.replayTimer = null;
+				document.getElementById('zg-replay-status').textContent = 'Replay paused';
+				jQuery(this).removeClass('is-active').text('Replay');
+				return;
+			}
+			startReplay();
+		});
+
+		if (typeof ResizeObserver !== 'undefined') {
+			state.resizeObserver = new ResizeObserver(function() {
+				refreshGraphViewport();
+			});
+			state.resizeObserver.observe(graphEl);
+		}
+
+		jQuery(window).off('resize.zgGraph').on('resize.zgGraph', function() {
+			refreshGraphViewport();
+		});
+
+		loadLayer('merged');
+	}
+
+	initZabGraphAIWorkspace();
+
 	jQuery.subscribe('acknowledge.create', function() {
-		if (window.location.href.indexOf('action=workflow.ops.view') !== -1 && wfRefreshUrl) {
+		if (window.location.href.indexOf('action=zabgraph.view') !== -1 && wfRefreshUrl) {
 			wfRefreshContent();
 		}
 	});

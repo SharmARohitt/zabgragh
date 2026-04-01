@@ -1,11 +1,11 @@
 <?php declare(strict_types = 0);
 
-namespace Modules\WorkflowOps\Actions;
+namespace Modules\ZabGraph\Actions;
 
 use CController;
 use CControllerResponseData;
 
-class CControllerWorkflowOpsPopup extends CControllerWorkflowOpsView {
+class CControllerZabGraphPopup extends CControllerZabGraphView {
 
 	protected function init(): void {
 		$this->disableCsrfValidation();

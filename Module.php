@@ -1,6 +1,6 @@
 <?php declare(strict_types = 0);
 
-namespace Modules\WorkflowOps;
+namespace Modules\ZabGraph;
 
 use Zabbix\Core\CModule;
 

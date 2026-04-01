@@ -1,10 +1,10 @@
 <?php declare(strict_types = 0);
 
-namespace Modules\WorkflowOps\Actions;
+namespace Modules\ZabGraph\Actions;
 
 use CControllerResponseData;
 
-class CControllerWorkflowOpsViewRefresh extends CControllerWorkflowOpsView {
+class CControllerZabGraphViewRefresh extends CControllerZabGraphView {
 
 	protected function doAction(): void {
 		parent::doAction();

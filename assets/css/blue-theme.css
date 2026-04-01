@@ -11,7 +11,7 @@
 .mnz-workflow-wrapper.mnz-workflow-single-page {
 	height: calc(100vh - 100px);
 	max-height: calc(100vh - 100px);
-	overflow: hidden;
+	overflow: auto;
 	padding: 12px 20px;
 	display: flex;
 	flex-direction: column;
@@ -73,6 +73,40 @@
 	flex: 1;
 	min-height: 0;
 	overflow: hidden;
+}
+
+.mnz-workflow-canvas-single.zg-ai-enabled,
+.mnz-workflow-canvas-single.mnz-canvas-single.zg-ai-enabled {
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: flex-start;
+	padding: 14px;
+	gap: 14px;
+	overflow: auto !important;
+	scrollbar-gutter: stable both-edges;
+}
+
+.mnz-workflow-canvas-single.zg-ai-enabled .mnz-workflow-flow,
+.mnz-workflow-canvas-single.mnz-canvas-single.zg-ai-enabled .mnz-workflow-flow {
+	margin-bottom: 8px;
+}
+
+.zg-legacy-workspace {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 0;
+	min-height: 460px;
+	border: 1px solid rgba(2, 117, 184, 0.3);
+	border-radius: 10px;
+	overflow: hidden;
+	background-color: #f5f6f8;
+	background-image:
+		radial-gradient(circle, rgba(2, 117, 184, 0.08) 1px, transparent 1px),
+		radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+	background-size: 20px 20px;
+	background-position: 0 0, 10px 10px;
+	box-shadow: inset 0 0 0 1px rgba(143, 178, 207, 0.1), 0 16px 36px rgba(8, 20, 33, 0.15);
 }
 
 .mnz-workflow-header {
@@ -2150,19 +2184,19 @@
 }
 
 
-.overlay-dialogue.mnz-workflow-ops-modal {
+.overlay-dialogue.mnz-zabgraph-modal {
 	width: 90vw !important;
 	max-width: 1400px;
 	max-height: 90vh;
 }
 
-.overlay-dialogue.mnz-workflow-ops-modal .overlay-dialogue-body {
-	overflow: hidden;
+.overlay-dialogue.mnz-zabgraph-modal .overlay-dialogue-body {
+	overflow: auto;
 	display: flex;
 	flex-direction: column;
 	min-height: 0;
 }
-.overlay-dialogue.mnz-workflow-ops-modal .overlay-dialogue-footer {
+.overlay-dialogue.mnz-zabgraph-modal .overlay-dialogue-footer {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -2170,14 +2204,14 @@
 	gap: 12px;
 	text-align: left;
 }
-.overlay-dialogue.mnz-workflow-ops-modal .overlay-dialogue-footer .mnz-workflow-modal-footer {
+.overlay-dialogue.mnz-zabgraph-modal .overlay-dialogue-footer .mnz-workflow-modal-footer {
 	flex: 1;
 	text-align: left;
 	margin: 0;
 	padding: 0;
 	border: none;
 }
-.overlay-dialogue.mnz-workflow-ops-modal .overlay-dialogue-footer .btn {
+.overlay-dialogue.mnz-zabgraph-modal .overlay-dialogue-footer .btn {
 	margin-left: auto;
 }
 .mnz-workflow-popup .mnz-workflow-canvas-single {
@@ -2189,4 +2223,139 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
+}
+
+.zg-ai-toolbar {
+	display: flex;
+	flex-shrink: 0;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	padding: 10px 12px;
+	background: linear-gradient(90deg, #0f2238, #10324c);
+	border: 1px solid rgba(2, 117, 184, 0.35);
+	border-radius: 10px;
+	box-shadow: 0 10px 24px rgba(12, 29, 46, 0.2);
+	color: #d8e6f2;
+}
+
+.zg-ai-toolbar-title {
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+}
+
+.zg-ai-toolbar-actions {
+	display: flex;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	padding-bottom: 2px;
+	gap: 8px;
+}
+
+.zg-ai-toolbar-actions .btn,
+.zg-ai-toolbar-actions .btn-alt {
+	white-space: nowrap;
+	border-radius: 999px;
+	padding: 5px 12px;
+	font-size: 12px;
+	border-color: rgba(159, 203, 234, 0.35);
+	background: rgba(9, 26, 41, 0.5);
+	color: #d5e5f1;
+}
+
+.zg-ai-toolbar-actions .zg-layer-btn.is-active,
+.zg-ai-toolbar-actions .btn#zg-replay-toggle.is-active {
+	background: linear-gradient(135deg, #2f90d8, #1e6ea9);
+	border-color: rgba(199, 228, 250, 0.8);
+	color: #ffffff;
+}
+
+.zg-ai-workspace {
+	display: grid;
+	flex-shrink: 0;
+	grid-template-columns: minmax(420px, 2fr) minmax(280px, 1fr);
+	gap: 14px;
+	min-height: clamp(460px, 56vh, 720px);
+	margin-bottom: 8px;
+	align-items: stretch;
+}
+
+.zg-cytoscape-canvas {
+	min-height: clamp(460px, 56vh, 720px);
+	border: 1px solid rgba(2, 117, 184, 0.3);
+	border-radius: 10px;
+	background: radial-gradient(circle at 15% 20%, #16314a, #0b1a2b);
+	box-shadow: inset 0 0 0 1px rgba(143, 178, 207, 0.1), 0 16px 36px rgba(8, 20, 33, 0.35);
+}
+
+.zg-ai-panel {
+	padding: 14px;
+	border: 1px solid rgba(2, 117, 184, 0.25);
+	border-radius: 10px;
+	background: #102235;
+	color: #d9e4ee;
+	overflow: auto;
+	min-height: 0;
+	box-shadow: 0 12px 28px rgba(10, 24, 36, 0.25);
+}
+
+.zg-ai-panel-title {
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: #8fb2cf;
+	margin-top: 10px;
+}
+
+.zg-ai-panel-value {
+	font-size: 14px;
+	font-weight: 600;
+	margin-top: 4px;
+}
+
+.zg-ai-panel-text {
+	font-size: 12px;
+	line-height: 1.45;
+	margin-top: 4px;
+}
+
+.zg-ai-actions-list {
+	margin: 6px 0 0 16px;
+	padding: 0;
+}
+
+.zg-ai-actions-list li {
+	font-size: 12px;
+	line-height: 1.45;
+	margin-bottom: 4px;
+}
+
+.zg-ai-replay-status {
+	margin-top: 12px;
+	font-size: 12px;
+	color: #9dc0db;
+	font-style: italic;
+}
+
+@media (max-width: 980px) {
+	.zg-ai-toolbar {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.zg-ai-toolbar-actions {
+		width: 100%;
+	}
+
+	.zg-ai-workspace {
+		grid-template-columns: 1fr;
+		min-height: 0;
+	}
+
+	.zg-cytoscape-canvas {
+		min-height: 360px;
+	}
 }

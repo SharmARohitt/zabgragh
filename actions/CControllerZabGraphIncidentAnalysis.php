@@ -1,13 +1,14 @@
 <?php declare(strict_types = 0);
 
-namespace Modules\WorkflowOps\Actions;
+namespace Modules\ZabGraph\Actions;
 
 use API;
 use CController;
 use CRoleHelper;
 use CWebUser;
+use Modules\ZabGraph\Services\AIAnalyzer;
 
-class CControllerWorkflowOpsIncidentAnalysis extends CController {
+class CControllerZabGraphIncidentAnalysis extends CController {
 
 	protected function init(): void {
 		$this->disableCsrfValidation();
@@ -73,11 +74,13 @@ class CControllerWorkflowOpsIncidentAnalysis extends CController {
 		}
 
 		$triggers = API::Trigger()->get([
-			'output' => ['triggerid'],
+			'output' => ['triggerid', 'description', 'priority', 'expression'],
 			'triggerids' => [$triggerid],
-			'selectHosts' => ['hostid']
+			'selectHosts' => ['hostid', 'name', 'host'],
+			'selectItems' => ['itemid', 'name', 'key_', 'value_type', 'units']
 		]);
 		$hostid = !empty($triggers[0]['hosts'][0]['hostid']) ? (int) $triggers[0]['hosts'][0]['hostid'] : 0;
+		$trigger = $triggers[0] ?? [];
 		$host = null;
 		if ($hostid > 0) {
 			$hosts = API::Host()->get([
@@ -144,6 +147,21 @@ class CControllerWorkflowOpsIncidentAnalysis extends CController {
 			$monthly_labels[] = zbx_date2str('M/y', strtotime($mk . '-01'));
 		}
 
+		$latest_event = !empty($all_events) ? $all_events[count($all_events) - 1] : [];
+
+		$ai_analysis = AIAnalyzer::analyze([
+			'problem' => [
+				'eventid' => $eventid,
+				'objectid' => $triggerid,
+				'clock' => $event['clock'] ?? time(),
+				'name' => $latest_event['name'] ?? _('Incident'),
+				'severity' => $latest_event['severity'] ?? 0
+			],
+			'trigger' => $trigger,
+			'host' => $host ?? ($trigger['hosts'][0] ?? []),
+			'items' => $trigger['items'] ?? []
+		]);
+
 		$chart_data = [
 			'success' => true,
 			'maintenances' => array_map(function ($m) {
@@ -176,7 +194,14 @@ class CControllerWorkflowOpsIncidentAnalysis extends CController {
 			'sameDayLastWeek' => _('Same day last week'),
 			'incidents' => _('incidents'),
 			'legendMaintenanceBorder' => _('Icon = incident during maintenance'),
-			'maintIconClass' => 'zi zi-wrench-alt-small'
+			'maintIconClass' => 'zi zi-wrench-alt-small',
+			'root_cause' => $ai_analysis['root_cause'] ?? '',
+			'confidence' => $ai_analysis['confidence'] ?? 0,
+			'causal_chain' => $ai_analysis['causal_chain'] ?? [],
+			'impact' => $ai_analysis['impact'] ?? [],
+			'timeline' => $ai_analysis['timeline'] ?? [],
+			'suggested_actions' => $ai_analysis['suggested_actions'] ?? [],
+			'explanation' => $ai_analysis['explanation'] ?? ''
 		];
 
 		$monthly_counts = array_fill_keys($month_keys, 0);

@@ -516,7 +516,7 @@ $limit = (int) ($data['limit'] ?? 50);
 
 
 $html_page = (new CHtmlPage())
-	->setTitle(_('Workflow Ops'))
+	->setTitle(_('ZabGraph'))
 	->setDocUrl('')
 	->setControls(
 		(new CTag('nav', true,
@@ -550,9 +550,9 @@ $content->addItem((new CScriptTag(
 
 if (!$is_single) {
 	$filter_form = (new CForm('get'))
-		->setName('mnz-workflow-ops-filter')
+		->setName('mnz-zabgraph-filter')
 		->setAttribute('aria-label', _('Workflow filters'));
-	$filter_form->addItem((new CInput('hidden', 'action', 'workflow.ops.view'))->removeId());
+	$filter_form->addItem((new CInput('hidden', 'action', 'zabgraph.view'))->removeId());
 	$filter_form->addItem((new CInput('hidden', 'view_mode', $view_mode))->removeId());
 
 	$severity_options = [
@@ -591,7 +591,42 @@ if (!$is_single) {
 	$content->addItem($filter_form);
 }
 
-$canvas = (new CDiv())->addClass('mnz-workflow-canvas' . ($is_single ? ' mnz-workflow-canvas-single mnz-canvas-single' : ''));
+$canvas = (new CDiv())->addClass('mnz-workflow-canvas' . ($is_single ? ' mnz-workflow-canvas-single mnz-canvas-single zg-ai-enabled' : ''));
+
+if ($is_single && !empty($data['eventid'])) {
+	$toolbar = (new CDiv())->addClass('zg-ai-toolbar');
+	$toolbar->addItem((new CSpan(_('AI Incident Workspace')))->addClass('zg-ai-toolbar-title'));
+	$toolbar->addItem(
+		(new CDiv([
+			(new CButton('zg-layer-causal', _('Causal')))->addClass('btn-alt zg-layer-btn')->setAttribute('type', 'button')->setAttribute('data-zg-layer', 'causal'),
+			(new CButton('zg-layer-infra', _('Infrastructure')))->addClass('btn-alt zg-layer-btn')->setAttribute('type', 'button')->setAttribute('data-zg-layer', 'infrastructure'),
+			(new CButton('zg-layer-timeline', _('Timeline')))->addClass('btn-alt zg-layer-btn')->setAttribute('type', 'button')->setAttribute('data-zg-layer', 'timeline'),
+			(new CButton('zg-layer-merged', _('Merged')))->addClass('btn-alt zg-layer-btn')->setAttribute('type', 'button')->setAttribute('data-zg-layer', 'merged'),
+			(new CButton('zg-replay-toggle', _('Replay')))->addClass('btn-alt')->setAttribute('type', 'button')
+		]))->addClass('zg-ai-toolbar-actions')
+	);
+
+	$workspace = (new CDiv())->addClass('zg-ai-workspace')->setId('zg-ai-workspace');
+	$workspace->addItem((new CDiv())->setId('zg-cytoscape-canvas')->addClass('zg-cytoscape-canvas'));
+	$workspace->addItem(
+		(new CDiv([
+			(new CDiv(_('Root Cause')))->addClass('zg-ai-panel-title'),
+			(new CDiv('-'))->setId('zg-ai-root-cause')->addClass('zg-ai-panel-value'),
+			(new CDiv(_('Confidence')))->addClass('zg-ai-panel-title'),
+			(new CDiv('-'))->setId('zg-ai-confidence')->addClass('zg-ai-panel-value'),
+			(new CDiv(_('Explanation')))->addClass('zg-ai-panel-title'),
+			(new CDiv('-'))->setId('zg-ai-explanation')->addClass('zg-ai-panel-text'),
+			(new CDiv(_('Suggested Actions')))->addClass('zg-ai-panel-title'),
+			(new CList())->setId('zg-ai-actions')->addClass('zg-ai-actions-list'),
+			(new CDiv(_('Similar Incidents')))->addClass('zg-ai-panel-title'),
+			(new CList())->setId('zg-ai-similar')->addClass('zg-ai-actions-list'),
+			(new CDiv())->setId('zg-replay-status')->addClass('zg-ai-replay-status')
+		]))->addClass('zg-ai-panel')
+	);
+
+	$canvas->addItem($toolbar);
+	$canvas->addItem($workspace);
+}
 
 if (empty($problems)) {
 	$canvas->addItem(
@@ -639,7 +674,7 @@ if (empty($problems)) {
 			->getUrl();
 
 		$workflow_single_url = (new CUrl('zabbix.php'))
-			->setArgument('action', 'workflow.ops.view')
+			->setArgument('action', 'zabgraph.view')
 			->setArgument('eventid', $eventid)
 			->getUrl();
 
@@ -922,7 +957,7 @@ if (empty($problems)) {
 		$trigger_card->addItem((new CDiv($trigger_header_items))->addClass('mnz-workflow-card-header'));
 		$trigger_desc = $trigger ? ($trigger['description'] ?? '') : _('N/A');
 		$workflow_backurl = (new CUrl('zabbix.php'))
-			->setArgument('action', 'workflow.ops.view')
+			->setArgument('action', 'zabgraph.view')
 			->setArgument('eventid', $data['eventid'] ?? '')
 			->setArgument('triggerid', $triggerid)
 			->getUrl();
@@ -1034,7 +1069,7 @@ if (empty($problems)) {
 					'itemid' => $item['itemid'],
 					'context' => 'host',
 					'backurl' => (new CUrl('zabbix.php'))
-						->setArgument('action', 'workflow.ops.view')
+						->setArgument('action', 'zabgraph.view')
 						->setArgument('eventid', $data['eventid'] ?? '')
 						->getUrl()
 				]))->setAttribute('title', $label);
@@ -1080,7 +1115,7 @@ if (empty($problems)) {
 					'itemid' => $item['itemid'],
 					'context' => 'host',
 					'backurl' => (new CUrl('zabbix.php'))
-						->setArgument('action', 'workflow.ops.view')
+						->setArgument('action', 'zabgraph.view')
 						->getUrl()
 				]))->setAttribute('title', $label);
 				$item_parts = [$link];
@@ -1300,7 +1335,7 @@ if (empty($problems)) {
 							'itemid' => $item['itemid'],
 							'context' => 'host',
 							'backurl' => (new CUrl('zabbix.php'))
-								->setArgument('action', 'workflow.ops.view')
+								->setArgument('action', 'zabgraph.view')
 								->setArgument('eventid', $data['eventid'] ?? '')
 								->getUrl()
 						]))->setAttribute('title', $label);
@@ -1497,9 +1532,13 @@ if (empty($problems)) {
 			$zoom_wrapper->addItem($flow);
 			$canvas_scroll = (new CDiv())->addClass('mnz-workflow-canvas-scroll');
 			$canvas_scroll->addItem($zoom_wrapper);
-			$canvas->addItem($minimap);
-			$canvas->addItem($zoom_toolbar);
-			$canvas->addItem($canvas_scroll);
+			
+			$legacy_workspace = (new CDiv())->addClass('zg-legacy-workspace');
+			$legacy_workspace->addItem($minimap);
+			$legacy_workspace->addItem($zoom_toolbar);
+			$legacy_workspace->addItem($canvas_scroll);
+			
+			$canvas->addItem($legacy_workspace);
 		} else {
 			$canvas->addItem($flow);
 		}
@@ -1680,26 +1719,30 @@ if (!$is_refresh) {
 	$wf_refresh_url = '';
 	if ($is_single && !empty($data['eventid'])) {
 		$wf_refresh_curl = new CUrl('zabbix.php');
-		$wf_refresh_curl->setArgument('action', 'workflow.ops.view.refresh');
+		$wf_refresh_curl->setArgument('action', 'zabgraph.view.refresh');
 		$wf_refresh_curl->setArgument('eventid', $data['eventid']);
 		$wf_refresh_curl->setArgument('show_acks', (string) $show_acks);
 		$wf_refresh_curl->setArgument('show_resolved', (string) $show_resolved);
 		$wf_refresh_url = $wf_refresh_curl->getUrl();
 	}
 	if ($is_single) {
+		$content->addItem((new CTag('script', true))->setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js'));
 		$content->addItem((new CTag('script', true))->setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'));
 		$content->addItem((new CTag('script', true))->setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'));
 	}
 	ob_start();
-	$wf_layout_save_url = (new CUrl('zabbix.php'))->setArgument('action', 'workflow.ops.layout.save')->getUrl();
-	$wf_analysis_url = (new CUrl('zabbix.php'))->setArgument('action', 'workflow.ops.incident.analysis')->getUrl();
-	include dirname(__FILE__).'/js/workflow.ops.view.js.php';
+	$wf_layout_save_url = (new CUrl('zabbix.php'))->setArgument('action', 'zabgraph.layout.save')->getUrl();
+	$wf_analysis_url = (new CUrl('zabbix.php'))->setArgument('action', 'zabgraph.incident.analysis')->getUrl();
+	$wf_graph_data_url = (new CUrl('zabbix.php'))->setArgument('action', 'zabgraph.graph.data')->getUrl();
+	$wf_similar_incidents_url = (new CUrl('zabbix.php'))->setArgument('action', 'zabgraph.similar.incidents')->getUrl();
+	$wf_eventid = $data['eventid'] ?? '';
+	include dirname(__FILE__).'/js/zabgraph.view.js.php';
 	$content->addItem(new CScriptTag(ob_get_clean()));
 }
 
 if (!$is_popup) {
 	$content->addItem(
-		(new CDiv(_('Developed by MonZphere')))
+		(new CDiv(_('Developed by Rohit Sharma')))
 			->addClass('mnz-module-footer mnz-workflow-modal-footer mnz-workflow-footer-centered')
 	);
 }
@@ -1715,10 +1758,10 @@ function getMediaTypeTypeLabel(int $type): string {
 }
 
 if ($is_popup) {
-	$developed_by = _('Developed by MonZphere');
-	$footer_js = '(function(){setTimeout(function(){var o=document.querySelector(".mnz-workflow-ops-modal")||document.querySelector("[data-dialogueid=\\"mnz-workflow-ops-popup\\"]");if(o){var f=o.querySelector(".overlay-dialogue-footer");if(f&&!f.querySelector(".mnz-workflow-modal-footer")){var d=document.createElement("div");d.className="mnz-workflow-modal-footer mnz-workflow-footer-centered";d.textContent=' . json_encode($developed_by) . ';d.style.cssText="font-size:11px;color:#6c757d;text-align:center;width:100%;";f.insertBefore(d,f.firstChild);}}},50);})();';
+	$developed_by = _('Developed by Rohit Sharma');
+	$footer_js = '(function(){setTimeout(function(){var o=document.querySelector(".mnz-zabgraph-modal")||document.querySelector("[data-dialogueid=\\"mnz-zabgraph-popup\\"]");if(o){var f=o.querySelector(".overlay-dialogue-footer");if(f&&!f.querySelector(".mnz-workflow-modal-footer")){var d=document.createElement("div");d.className="mnz-workflow-modal-footer mnz-workflow-footer-centered";d.textContent=' . json_encode($developed_by) . ';d.style.cssText="font-size:11px;color:#6c757d;text-align:center;width:100%;";f.insertBefore(d,f.firstChild);}}},50);})();';
 	echo json_encode([
-		'header' => _('Workflow Ops'),
+		'header' => _('ZabGraph'),
 		'body' => $content->toString(),
 		'buttons' => [
 			['title' => _('Close'), 'class' => 'btn-alt js-cancel', 'cancel' => true, 'action' => '']

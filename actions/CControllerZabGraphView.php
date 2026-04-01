@@ -1,6 +1,6 @@
 <?php declare(strict_types = 0);
 
-namespace Modules\WorkflowOps\Actions;
+namespace Modules\ZabGraph\Actions;
 
 use API;
 use CController;
@@ -9,7 +9,7 @@ use CProfile;
 use CRoleHelper;
 use CWebUser;
 
-class CControllerWorkflowOpsView extends CController {
+class CControllerZabGraphView extends CController {
 
 	protected function init(): void {
 		$this->disableCsrfValidation();
@@ -35,28 +35,28 @@ class CControllerWorkflowOpsView extends CController {
 		$eventid = $this->getInput('eventid', '');
 		$is_single = $eventid !== '';
 		$is_apply = $this->hasInput('apply');
-		$view_mode = $this->getInput('view_mode', CProfile::get('mnz.workflow.ops.view_mode', 'cards'));
+		$view_mode = $this->getInput('view_mode', CProfile::get('zg.zabgraph.view_mode', 'cards'));
 		$severity_filter = $is_apply
 			? (array) $this->getInput('severity_filter', [])
-			: $this->getInput('severity_filter', CProfile::getArray('mnz.workflow.ops.severity_filter', []));
-		$show_acks = (int) $this->getInput('show_acks', CProfile::get('mnz.workflow.ops.show_acks', '1'));
-		$show_resolved = (int) $this->getInput('show_resolved', CProfile::get('mnz.workflow.ops.show_resolved', '0'));
-		$limit = (int) $this->getInput('limit', CProfile::get('mnz.workflow.ops.limit', '50'));
+			: $this->getInput('severity_filter', CProfile::getArray('zg.zabgraph.severity_filter', []));
+		$show_acks = (int) $this->getInput('show_acks', CProfile::get('zg.zabgraph.show_acks', '1'));
+		$show_resolved = (int) $this->getInput('show_resolved', CProfile::get('zg.zabgraph.show_resolved', '0'));
+		$limit = (int) $this->getInput('limit', CProfile::get('zg.zabgraph.limit', '50'));
 
 		if ($this->hasInput('view_mode')) {
-			CProfile::update('mnz.workflow.ops.view_mode', $view_mode, PROFILE_TYPE_STR);
+			CProfile::update('zg.zabgraph.view_mode', $view_mode, PROFILE_TYPE_STR);
 		}
 		if ($is_apply) {
-			CProfile::updateArray('mnz.workflow.ops.severity_filter', $severity_filter, PROFILE_TYPE_STR);
+			CProfile::updateArray('zg.zabgraph.severity_filter', $severity_filter, PROFILE_TYPE_STR);
 		}
 		if ($this->hasInput('show_acks')) {
-			CProfile::update('mnz.workflow.ops.show_acks', (string) $show_acks, PROFILE_TYPE_STR);
+			CProfile::update('zg.zabgraph.show_acks', (string) $show_acks, PROFILE_TYPE_STR);
 		}
 		if ($this->hasInput('show_resolved')) {
-			CProfile::update('mnz.workflow.ops.show_resolved', (string) $show_resolved, PROFILE_TYPE_STR);
+			CProfile::update('zg.zabgraph.show_resolved', (string) $show_resolved, PROFILE_TYPE_STR);
 		}
 		if ($this->hasInput('limit')) {
-			CProfile::update('mnz.workflow.ops.limit', (string) $limit, PROFILE_TYPE_STR);
+			CProfile::update('zg.zabgraph.limit', (string) $limit, PROFILE_TYPE_STR);
 		}
 
 		$data = [
@@ -88,7 +88,7 @@ class CControllerWorkflowOpsView extends CController {
 		];
 
 		if ($is_single) {
-			$layout_json = CProfile::get('mnz.workflow.ops.layout', '');
+			$layout_json = CProfile::get('zg.zabgraph.layout', '');
 			if ($layout_json !== '') {
 				$layout_data = json_decode($layout_json, true);
 				if (is_array($layout_data)) {
@@ -104,7 +104,7 @@ class CControllerWorkflowOpsView extends CController {
 		}
 
 		$response = new CControllerResponseData($data);
-		$response->setTitle(_('Workflow Ops'));
+		$response->setTitle(_('ZabGraph'));
 		$this->setResponse($response);
 	}
 
@@ -363,7 +363,7 @@ class CControllerWorkflowOpsView extends CController {
 		$hostid = !empty($data['triggers'][$triggerid]['hosts']) ? (int) $data['triggers'][$triggerid]['hosts'][0]['hostid'] : 0;
 		$data['service_trees'] = [];
 		if ($hostid > 0) {
-			$data['service_trees'] = \Modules\WorkflowOps\Actions\CControllerWorkflowOpsServiceImpact::getServiceTreesForHost((string) $hostid);
+			$data['service_trees'] = \Modules\ZabGraph\Actions\CControllerZabGraphServiceImpact::getServiceTreesForHost((string) $hostid);
 		}
 
 		$data['problem_count_current'] = null;

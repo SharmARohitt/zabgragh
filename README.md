@@ -1,8 +1,8 @@
-# Workflow Ops
-![views](https://komarev.com/ghpvc/?username=matheusandrade&repo=https://github.com/Monzphere/WorkflowOps) 
-![Stars](https://img.shields.io/github/stars/Monzphere/WorkflowOps?style=social)
-![Forks](https://img.shields.io/github/forks/Monzphere/WorkflowOps?style=social)
-![Issues](https://img.shields.io/github/issues/Monzphere/WorkflowOps)
+# ZabGraph
+![views](https://komarev.com/ghpvc/?username=rohitsharma&repo=https://github.com/rohitsharma/ZabGraph) 
+![Stars](https://img.shields.io/github/stars/rohitsharma/ZabGraph?style=social)
+![Forks](https://img.shields.io/github/forks/rohitsharma/ZabGraph?style=social)
+![Issues](https://img.shields.io/github/issues/rohitsharma/ZabGraph)
 
 Zabbix module that provides a visual correlation view of Problems, Triggers and Actions. The workflow shows the relationship Host → Item → Trigger → Problem → Actions → Media types → Recipients.
 
@@ -19,10 +19,10 @@ Service impact (SLA/SLI) and temporal analysis heatmap require the Zabbix Servic
 
 ## Installation
 
-1. Copy the `WorkflowOps` folder to `/usr/share/zabbix/modules/`
+1. Copy the `ZabGraph` folder to `/usr/share/zabbix/modules/`
 2. Restart the Zabbix frontend or clear the cache
 3. The module is loaded automatically
-4. Access: icon on Monitoring → Problems or via `?action=workflow.ops.view`
+4. Access: icon on Monitoring → Problems or via `?action=zabgraph.view`
 
 ## Features
 
@@ -45,4 +45,4 @@ GPL v2 (compatible with Zabbix)
 
 ## Author
 
-MonZphere - https://monzphere.com
+Rohit Sharma - https://github.com/rohitsharma

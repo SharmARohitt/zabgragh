@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	const WORKFLOW_ACTION = 'workflow.ops.view';
+	const WORKFLOW_ACTION = 'zabgraph.view';
 	const ICON_CLASS = 'zi-monitoring';
 
 	function isProblemsContext() {
@@ -50,7 +50,7 @@
 		return result;
 	}
 
-	const POPUP_ACTION = 'workflow.ops.popup';
+	const POPUP_ACTION = 'zabgraph.popup';
 
 	function getWorkflowParams(eventid, triggerid) {
 		const params = { eventid: String(eventid) };
@@ -64,8 +64,8 @@
 		const link = document.createElement('a');
 		link.href = '#';
 		link.className = 'btn-icon btn-icon-small ms-1 mnz-problem-workflow-icon';
-		link.title = 'Workflow Ops';
-		link.setAttribute('aria-label', 'Workflow Ops');
+		link.title = 'ZabGraph';
+		link.setAttribute('aria-label', 'ZabGraph');
 		link.style.cursor = 'pointer';
 		link.style.display = 'inline-flex';
 		link.style.alignItems = 'center';
@@ -75,8 +75,8 @@
 			e.preventDefault();
 			if (typeof PopUp !== 'undefined') {
 				PopUp(POPUP_ACTION, getWorkflowParams(eventid, triggerid), {
-					dialogueid: 'mnz-workflow-ops-popup',
-					dialogue_class: 'modal-popup mnz-workflow-ops-modal'
+					dialogueid: 'mnz-zabgraph-popup',
+					dialogue_class: 'modal-popup mnz-zabgraph-modal'
 				});
 			} else {
 				window.location.href = (new URL('zabbix.php', window.location.href)).pathname + '?action=' + WORKFLOW_ACTION + '&eventid=' + eventid + (triggerid ? '&triggerid=' + triggerid : '');
