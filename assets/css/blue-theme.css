@@ -2232,11 +2232,11 @@
 	align-items: center;
 	gap: 12px;
 	padding: 10px 12px;
-	background: linear-gradient(90deg, #0f2238, #10324c);
-	border: 1px solid rgba(2, 117, 184, 0.35);
+	background: linear-gradient(90deg, #ffffff, #f6f9fc);
+	border: 1px solid rgba(2, 117, 184, 0.22);
 	border-radius: 10px;
-	box-shadow: 0 10px 24px rgba(12, 29, 46, 0.2);
-	color: #d8e6f2;
+	box-shadow: 0 10px 24px rgba(12, 29, 46, 0.08);
+	color: #16324a;
 }
 
 .zg-ai-toolbar-title {
@@ -2260,9 +2260,9 @@
 	border-radius: 999px;
 	padding: 5px 12px;
 	font-size: 12px;
-	border-color: rgba(159, 203, 234, 0.35);
-	background: rgba(9, 26, 41, 0.5);
-	color: #d5e5f1;
+	border-color: rgba(90, 139, 175, 0.35);
+	background: #ffffff;
+	color: #1f3b52;
 }
 
 .zg-ai-toolbar-actions .zg-layer-btn.is-active,
@@ -2284,21 +2284,21 @@
 
 .zg-cytoscape-canvas {
 	min-height: clamp(460px, 56vh, 720px);
-	border: 1px solid rgba(2, 117, 184, 0.3);
+	border: 1px solid rgba(2, 117, 184, 0.22);
 	border-radius: 10px;
-	background: radial-gradient(circle at 15% 20%, #16314a, #0b1a2b);
-	box-shadow: inset 0 0 0 1px rgba(143, 178, 207, 0.1), 0 16px 36px rgba(8, 20, 33, 0.35);
+	background: radial-gradient(circle at 15% 20%, #f8fcff, #eef5fb);
+	box-shadow: inset 0 0 0 1px rgba(143, 178, 207, 0.18), 0 12px 28px rgba(8, 20, 33, 0.1);
 }
 
 .zg-ai-panel {
 	padding: 14px;
-	border: 1px solid rgba(2, 117, 184, 0.25);
+	border: 1px solid rgba(2, 117, 184, 0.2);
 	border-radius: 10px;
-	background: #102235;
-	color: #d9e4ee;
+	background: #ffffff;
+	color: #1d3448;
 	overflow: auto;
 	min-height: 0;
-	box-shadow: 0 12px 28px rgba(10, 24, 36, 0.25);
+	box-shadow: 0 12px 28px rgba(10, 24, 36, 0.08);
 }
 
 .zg-ai-panel-title {
@@ -2306,7 +2306,7 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
-	color: #8fb2cf;
+	color: #2b6d99;
 	margin-top: 10px;
 }
 
@@ -2322,21 +2322,81 @@
 	margin-top: 4px;
 }
 
-.zg-ai-actions-list {
-	margin: 6px 0 0 16px;
-	padding: 0;
+.zg-ai-table-wrap {
+	margin-top: 8px;
 }
 
-.zg-ai-actions-list li {
+.zg-ai-table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
 	font-size: 12px;
-	line-height: 1.45;
-	margin-bottom: 4px;
+	line-height: 1.35;
+	border: 1px solid rgba(43, 109, 153, 0.18);
+	border-radius: 8px;
+	overflow: hidden;
+	background: #fbfdff;
+}
+
+.zg-ai-table th,
+.zg-ai-table td {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgba(43, 109, 153, 0.12);
+	text-align: left;
+	vertical-align: top;
+}
+
+.zg-ai-table thead th {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	background: #eef6fc;
+	color: #2a5f85;
+	font-weight: 700;
+}
+
+.zg-ai-summary-table th {
+	width: 34%;
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.35px;
+	color: #2a5f85;
+	background: #f3f9ff;
+	font-weight: 700;
+}
+
+.zg-ai-summary-table td {
+	font-weight: 600;
+	color: #1d3448;
+}
+
+.zg-ai-actions-table td:first-child,
+.zg-ai-similar-table td:nth-child(2) {
+	word-break: break-word;
+}
+
+.zg-ai-col-priority,
+.zg-ai-col-match {
+	white-space: nowrap;
+	font-weight: 700;
+	color: #1f6ea5;
+}
+
+.zg-ai-table tbody tr:last-child th,
+.zg-ai-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.zg-ai-table-empty {
+	text-align: center;
+	font-style: italic;
+	color: #5f7e99;
 }
 
 .zg-ai-replay-status {
 	margin-top: 12px;
 	font-size: 12px;
-	color: #9dc0db;
+	color: #4a7899;
 	font-style: italic;
 }
 

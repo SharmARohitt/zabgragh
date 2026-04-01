@@ -1054,6 +1054,15 @@ jQuery(document).ready(function() {
 			state.cy.fit(undefined, 30);
 		}
 
+		function escHtml(value) {
+			return String(value == null ? '' : value)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#39;');
+		}
+
 		function statusClass(status) {
 			if (status === 'critical') return '#d63a44';
 			if (status === 'warning') return '#e6952b';
@@ -1106,7 +1115,7 @@ jQuery(document).ready(function() {
 							'width': 28,
 							'height': 28,
 							'font-size': 10,
-							'color': '#dfe7ef',
+							'color': '#1f3b52',
 							'text-wrap': 'wrap',
 							'text-max-width': 120,
 							'text-valign': 'bottom',
@@ -1118,12 +1127,12 @@ jQuery(document).ready(function() {
 						style: {
 							'label': 'data(label)',
 							'curve-style': 'bezier',
-							'line-color': '#5e748d',
-							'target-arrow-color': '#5e748d',
+							'line-color': '#6d88a3',
+							'target-arrow-color': '#6d88a3',
 							'target-arrow-shape': 'triangle',
 							'arrow-scale': 0.8,
 							'font-size': 9,
-							'color': '#9bb0c4'
+							'color': '#5b7590'
 						}
 					}
 				],
@@ -1140,24 +1149,41 @@ jQuery(document).ready(function() {
 
 			state.cy.on('tap', 'node', function(evt) {
 				var node = evt.target.data();
-				document.getElementById('zg-ai-root-cause').textContent = node.label;
-				document.getElementById('zg-ai-explanation').textContent = 'Node type: ' + node.type + ' | status: ' + node.status;
+				var rootCauseEl = document.getElementById('zg-ai-root-cause');
+				var explanationEl = document.getElementById('zg-ai-explanation');
+				if (rootCauseEl) rootCauseEl.textContent = node.label;
+				if (explanationEl) explanationEl.textContent = 'Node type: ' + node.type + ' | status: ' + node.status;
 			});
 		}
 
 		function updatePanel(payload) {
 			var right = payload.right_panel || {};
-			document.getElementById('zg-ai-root-cause').textContent = right.root_cause || '-';
-			document.getElementById('zg-ai-confidence').textContent = Math.round((right.confidence || 0) * 100) + '%';
-			document.getElementById('zg-ai-explanation').textContent = right.explanation || '-';
+			var summary = document.getElementById('zg-ai-summary-table');
+			if (summary) {
+				summary.innerHTML = '' +
+					'<table class="zg-ai-table zg-ai-summary-table">' +
+						'<tbody>' +
+							'<tr><th>Root Cause</th><td id="zg-ai-root-cause">' + escHtml(right.root_cause || '-') + '</td></tr>' +
+							'<tr><th>Confidence</th><td id="zg-ai-confidence">' + escHtml(Math.round((right.confidence || 0) * 100) + '%') + '</td></tr>' +
+							'<tr><th>Explanation</th><td id="zg-ai-explanation">' + escHtml(right.explanation || '-') + '</td></tr>' +
+						'</tbody>' +
+					'</table>';
+			}
 
-			var actions = document.getElementById('zg-ai-actions');
-			actions.innerHTML = '';
-			(right.fixes || []).forEach(function(action) {
-				var li = document.createElement('li');
-				li.textContent = action.title + ' [' + (action.priority || 'n/a') + ']';
-				actions.appendChild(li);
-			});
+			var actionsWrap = document.getElementById('zg-ai-actions-table');
+			if (actionsWrap) {
+				var rows = (right.fixes || []).map(function(action) {
+					return '<tr><td>' + escHtml(action.title || '-') + '</td><td class="zg-ai-col-priority">' + escHtml((action.priority || 'n/a').toUpperCase()) + '</td></tr>';
+				}).join('');
+				if (!rows) {
+					rows = '<tr><td colspan="2" class="zg-ai-table-empty">No suggested actions</td></tr>';
+				}
+				actionsWrap.innerHTML = '' +
+					'<table class="zg-ai-table zg-ai-actions-table">' +
+						'<thead><tr><th>Action</th><th>Priority</th></tr></thead>' +
+						'<tbody>' + rows + '</tbody>' +
+					'</table>';
+			}
 		}
 
 		function loadSimilarIncidents() {
@@ -1167,20 +1193,27 @@ jQuery(document).ready(function() {
 				type: 'GET',
 				dataType: 'json'
 			}).done(function(resp) {
-				var list = document.getElementById('zg-ai-similar');
-				if (!list) return;
-				list.innerHTML = '';
-				if (!resp || !resp.success || !resp.incidents || !resp.incidents.length) {
-					var empty = document.createElement('li');
-					empty.textContent = 'No similar incidents detected';
-					list.appendChild(empty);
-					return;
+				var wrap = document.getElementById('zg-ai-similar-table');
+				if (!wrap) return;
+				var rows = '';
+				if (resp && resp.success && resp.incidents && resp.incidents.length) {
+					rows = resp.incidents.map(function(inc) {
+						return '<tr>' +
+							'<td>#' + escHtml(inc.eventid) + '</td>' +
+							'<td>' + escHtml(inc.name || '-') + '</td>' +
+							'<td class="zg-ai-col-match">' + escHtml(Math.round((inc.match_score || 0) * 100) + '%') + '</td>' +
+						'</tr>';
+					}).join('');
 				}
-				resp.incidents.forEach(function(inc) {
-					var li = document.createElement('li');
-					li.textContent = '#' + inc.eventid + ' - ' + inc.name + ' (' + Math.round((inc.match_score || 0) * 100) + '%)';
-					list.appendChild(li);
-				});
+				if (!rows) {
+					rows = '<tr><td colspan="3" class="zg-ai-table-empty">No similar incidents detected</td></tr>';
+				}
+
+				wrap.innerHTML = '' +
+					'<table class="zg-ai-table zg-ai-similar-table">' +
+						'<thead><tr><th>Event</th><th>Problem</th><th>Match</th></tr></thead>' +
+						'<tbody>' + rows + '</tbody>' +
+					'</table>';
 			});
 		}
 

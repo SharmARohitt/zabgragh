@@ -610,16 +610,12 @@ if ($is_single && !empty($data['eventid'])) {
 	$workspace->addItem((new CDiv())->setId('zg-cytoscape-canvas')->addClass('zg-cytoscape-canvas'));
 	$workspace->addItem(
 		(new CDiv([
-			(new CDiv(_('Root Cause')))->addClass('zg-ai-panel-title'),
-			(new CDiv('-'))->setId('zg-ai-root-cause')->addClass('zg-ai-panel-value'),
-			(new CDiv(_('Confidence')))->addClass('zg-ai-panel-title'),
-			(new CDiv('-'))->setId('zg-ai-confidence')->addClass('zg-ai-panel-value'),
-			(new CDiv(_('Explanation')))->addClass('zg-ai-panel-title'),
-			(new CDiv('-'))->setId('zg-ai-explanation')->addClass('zg-ai-panel-text'),
+			(new CDiv(_('Incident Summary')))->addClass('zg-ai-panel-title'),
+			(new CDiv())->setId('zg-ai-summary-table')->addClass('zg-ai-table-wrap'),
 			(new CDiv(_('Suggested Actions')))->addClass('zg-ai-panel-title'),
-			(new CList())->setId('zg-ai-actions')->addClass('zg-ai-actions-list'),
+			(new CDiv())->setId('zg-ai-actions-table')->addClass('zg-ai-table-wrap'),
 			(new CDiv(_('Similar Incidents')))->addClass('zg-ai-panel-title'),
-			(new CList())->setId('zg-ai-similar')->addClass('zg-ai-actions-list'),
+			(new CDiv())->setId('zg-ai-similar-table')->addClass('zg-ai-table-wrap'),
 			(new CDiv())->setId('zg-replay-status')->addClass('zg-ai-replay-status')
 		]))->addClass('zg-ai-panel')
 	);
