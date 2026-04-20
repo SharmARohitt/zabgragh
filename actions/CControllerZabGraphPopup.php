@@ -2,6 +2,7 @@
 
 namespace Modules\ZabGraph\Actions;
 
+use API;
 use CController;
 use CControllerResponseData;
 
@@ -20,7 +21,8 @@ class CControllerZabGraphPopup extends CControllerZabGraphView {
 	}
 
 	protected function doAction(): void {
-		$eventid = $this->getInput('eventid');
+		$eventid = (string) $this->getInput('eventid');
+		$triggerid = (int) $this->getInput('triggerid', 0);
 		$data = [
 			'eventid' => $eventid,
 			'is_single' => true,
@@ -48,6 +50,43 @@ class CControllerZabGraphPopup extends CControllerZabGraphView {
 		];
 
 		$this->fetchSingleProblemWorkflow($data, $eventid);
+
+		if (empty($data['problems']) && $triggerid > 0) {
+			// Fallback for stale event IDs: resolve the latest problem/event for this trigger.
+			$latest_problems = API::Problem()->get([
+				'output' => ['eventid', 'clock'],
+				'objectids' => [$triggerid],
+				'source' => EVENT_SOURCE_TRIGGERS,
+				'object' => EVENT_OBJECT_TRIGGER,
+				'recent' => true,
+				'sortfield' => ['clock'],
+				'sortorder' => ZBX_SORT_DOWN,
+				'limit' => 1
+			]);
+
+			if (!empty($latest_problems)) {
+				$eventid = (string) $latest_problems[0]['eventid'];
+				$data['eventid'] = $eventid;
+				$this->fetchSingleProblemWorkflow($data, $eventid);
+			}
+			else {
+				$latest_events = API::Event()->get([
+					'output' => ['eventid', 'clock'],
+					'objectids' => [$triggerid],
+					'source' => EVENT_SOURCE_TRIGGERS,
+					'object' => EVENT_OBJECT_TRIGGER,
+					'sortfield' => ['clock'],
+					'sortorder' => ZBX_SORT_DOWN,
+					'limit' => 1
+				]);
+
+				if (!empty($latest_events)) {
+					$eventid = (string) $latest_events[0]['eventid'];
+					$data['eventid'] = $eventid;
+					$this->fetchSingleProblemWorkflow($data, $eventid);
+				}
+			}
+		}
 
 		if (empty($data['problems'])) {
 			$this->setResponse(

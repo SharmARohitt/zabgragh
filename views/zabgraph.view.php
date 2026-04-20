@@ -605,11 +605,20 @@ if ($is_single && !empty($data['eventid'])) {
 			(new CButton('zg-replay-toggle', _('Replay')))->addClass('btn-alt')->setAttribute('type', 'button')
 		]))->addClass('zg-ai-toolbar-actions')
 	);
+	$toolbar->addItem(
+		(new CDiv([
+			(new CButton('zg-layout-cose', _('Organic')))->addClass('btn-alt zg-layout-btn is-active')->setAttribute('type', 'button')->setAttribute('data-zg-layout', 'cose'),
+			(new CButton('zg-layout-concentric', _('Concentric')))->addClass('btn-alt zg-layout-btn')->setAttribute('type', 'button')->setAttribute('data-zg-layout', 'concentric'),
+			(new CButton('zg-layout-breadthfirst', _('Flow')))->addClass('btn-alt zg-layout-btn')->setAttribute('type', 'button')->setAttribute('data-zg-layout', 'breadthfirst'),
+			(new CButton('zg-layout-fit', _('Fit View')))->addClass('btn-alt')->setAttribute('type', 'button')
+		]))->addClass('zg-ai-toolbar-layouts')
+	);
 
 	$workspace = (new CDiv())->addClass('zg-ai-workspace')->setId('zg-ai-workspace');
 	$workspace->addItem((new CDiv())->setId('zg-cytoscape-canvas')->addClass('zg-cytoscape-canvas'));
 	$workspace->addItem(
 		(new CDiv([
+			(new CDiv())->setId('zg-ai-kpis')->addClass('zg-ai-kpis'),
 			(new CDiv(_('Incident Summary')))->addClass('zg-ai-panel-title'),
 			(new CDiv())->setId('zg-ai-summary-table')->addClass('zg-ai-table-wrap'),
 			(new CDiv(_('Suggested Actions')))->addClass('zg-ai-panel-title'),

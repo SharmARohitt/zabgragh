@@ -2,6 +2,7 @@
 	'use strict';
 
 	const WORKFLOW_ACTION = 'zabgraph.view';
+	const HOST_POPUP_ACTION = 'voiceai.hostgraphs';
 	const ICON_CLASS = 'zi-monitoring';
 
 	function isProblemsContext() {
@@ -50,6 +51,38 @@
 		return result;
 	}
 
+	function isHostsContext() {
+		return window.location.href.includes('action=host.view') ||
+			window.location.href.includes('action=latest.view') ||
+			document.querySelector('form[name="host"]') !== null ||
+			document.querySelector('table.list-table td') !== null;
+	}
+
+	function getHostTables() {
+		const result = [];
+		const seen = new Set();
+
+		function add(table) {
+			if (table && table.querySelector && !seen.has(table)) {
+				seen.add(table);
+				result.push(table);
+			}
+		}
+
+		const formHost = document.querySelector('form[name="host"]');
+		if (formHost) {
+			formHost.querySelectorAll('table.list-table').forEach(add);
+		}
+
+		document.querySelectorAll('table.list-table').forEach(function(table) {
+			if (table.querySelector('a[href*="action=host.edit"], a[href*="hostid="]')) {
+				add(table);
+			}
+		});
+
+		return result;
+	}
+
 	const POPUP_ACTION = 'zabgraph.popup';
 
 	function getWorkflowParams(eventid, triggerid) {
@@ -83,6 +116,94 @@
 			}
 		});
 		return link;
+	}
+
+	function createHostWorkflowIcon(hostid) {
+		const link = document.createElement('a');
+		link.href = '#';
+		link.className = 'btn-icon btn-icon-small ms-1 mnz-host-zabgraph-icon';
+		link.title = 'ZabGraph';
+		link.setAttribute('aria-label', 'ZabGraph');
+		link.style.cursor = 'pointer';
+		link.style.display = 'inline-flex';
+		link.style.alignItems = 'center';
+		link.style.verticalAlign = 'middle';
+		link.innerHTML = '<span class="' + ICON_CLASS + '" style="font-size: 12px;"></span>';
+		link.addEventListener('click', function(e) {
+			e.preventDefault();
+			window.location.href = (new URL('zabbix.php', window.location.href)).pathname
+				+ '?action=' + HOST_POPUP_ACTION
+				+ '&hostid=' + encodeURIComponent(String(hostid));
+		});
+		return link;
+	}
+
+	function getHostidFromRow(row) {
+		const links = row.querySelectorAll('a[href]');
+		for (let i = 0; i < links.length; i++) {
+			const href = links[i].getAttribute('href') || '';
+			const m = href.match(/[?&]hostid=(\d+)/);
+			if (m && m[1]) {
+				return m[1];
+			}
+		}
+		const hostCheckbox = row.querySelector('input[name^="hostids["]');
+		if (hostCheckbox) {
+			const name = hostCheckbox.getAttribute('name') || '';
+			const m = name.match(/hostids\[(\d+)\]/);
+			if (m && m[1]) {
+				return m[1];
+			}
+		}
+		return null;
+	}
+
+	function getHostGraphsCell(row) {
+		const links = row.querySelectorAll('a[href]');
+		for (let i = 0; i < links.length; i++) {
+			const txt = (links[i].textContent || '').trim().toLowerCase();
+			if (txt === 'graphs') {
+				const td = links[i].closest('td');
+				if (td) {
+					return { cell: td, graphLink: links[i] };
+				}
+			}
+		}
+		const actionsCell = row.querySelector('td.list-table-actions, td .list-table-actions');
+		if (actionsCell) {
+			const td = actionsCell.closest('td') || actionsCell;
+			return { cell: td, graphLink: null };
+		}
+		const lastTd = row.querySelector('td:last-child');
+		if (lastTd) {
+			return { cell: lastTd, graphLink: null };
+		}
+		return { cell: null, graphLink: null };
+	}
+
+	function injectHostButtonsIntoTable(table) {
+		const rows = table.querySelectorAll('tbody tr');
+		rows.forEach(function(row) {
+			if (row.querySelector('.mnz-host-zabgraph-icon')) return;
+
+			const hostid = getHostidFromRow(row);
+			if (!hostid) return;
+
+			const target = getHostGraphsCell(row);
+			if (!target || !target.cell) return;
+
+			const button = createHostWorkflowIcon(hostid);
+			const spacer = document.createTextNode(' ');
+
+			if (target.graphLink && target.graphLink.nextSibling) {
+				target.graphLink.parentNode.insertBefore(spacer, target.graphLink.nextSibling);
+				target.graphLink.parentNode.insertBefore(button, target.graphLink.nextSibling);
+			}
+			else {
+				target.cell.appendChild(spacer);
+				target.cell.appendChild(button);
+			}
+		});
 	}
 
 	function findProblemLinkAndIds(row) {
@@ -177,10 +298,15 @@
 	}
 
 	function injectIcons() {
-		if (!isProblemsContext()) return;
+		if (isProblemsContext()) {
+			const problemTables = getProblemsTables();
+			problemTables.forEach(injectIconsIntoTable);
+		}
 
-		const tables = getProblemsTables();
-		tables.forEach(injectIconsIntoTable);
+		if (isHostsContext()) {
+			const hostTables = getHostTables();
+			hostTables.forEach(injectHostButtonsIntoTable);
+		}
 	}
 
 	function init() {

@@ -1036,6 +1036,7 @@ jQuery(document).ready(function() {
 
 		var state = {
 			activeLayer: 'merged',
+			layoutMode: 'cose',
 			payload: null,
 			cy: null,
 			replayTimer: null,
@@ -1103,6 +1104,7 @@ jQuery(document).ready(function() {
 				state.cy.destroy();
 			}
 
+			graphEl.classList.add('is-loading');
 			state.cy = cytoscape({
 				container: graphEl,
 				elements: buildElements(layerData),
@@ -1123,6 +1125,22 @@ jQuery(document).ready(function() {
 						}
 					},
 					{
+						selector: '.is-dim',
+						style: {
+							'opacity': 0.18
+						}
+					},
+					{
+						selector: '.is-focus',
+						style: {
+							'opacity': 1,
+							'line-color': '#1e88d7',
+							'target-arrow-color': '#1e88d7',
+							'width': 2.6,
+							'background-color': '#1e88d7'
+						}
+					},
+					{
 						selector: 'edge',
 						style: {
 							'label': 'data(label)',
@@ -1137,12 +1155,14 @@ jQuery(document).ready(function() {
 					}
 				],
 				layout: {
-					name: layerName === 'timeline' ? 'breadthfirst' : 'cose',
+					name: layerName === 'timeline' ? 'breadthfirst' : state.layoutMode,
 					animate: true,
 					fit: true,
 					padding: 30
 				}
 			});
+
+			graphEl.classList.remove('is-loading');
 
 			setTimeout(refreshGraphViewport, 80);
 			setTimeout(refreshGraphViewport, 260);
@@ -1154,10 +1174,31 @@ jQuery(document).ready(function() {
 				if (rootCauseEl) rootCauseEl.textContent = node.label;
 				if (explanationEl) explanationEl.textContent = 'Node type: ' + node.type + ' | status: ' + node.status;
 			});
+
+			state.cy.on('mouseover', 'node', function(evt) {
+				var node = evt.target;
+				state.cy.elements().addClass('is-dim').removeClass('is-focus');
+				node.removeClass('is-dim').addClass('is-focus');
+				node.connectedEdges().removeClass('is-dim').addClass('is-focus');
+				node.connectedEdges().connectedNodes().removeClass('is-dim').addClass('is-focus');
+			});
+
+			state.cy.on('mouseout', 'node', function() {
+				state.cy.elements().removeClass('is-dim').removeClass('is-focus');
+			});
 		}
 
 		function updatePanel(payload) {
 			var right = payload.right_panel || {};
+			var kpis = document.getElementById('zg-ai-kpis');
+			if (kpis) {
+				var impactCount = ((payload.impact_analysis || {}).impact_nodes || []).length;
+				var edgesCount = ((payload.impact_analysis || {}).downstream_edges || []).length;
+				kpis.innerHTML = ''
+					+ '<div class="zg-ai-kpi"><span>Confidence</span><strong>' + escHtml(Math.round((right.confidence || 0) * 100) + '%') + '</strong></div>'
+					+ '<div class="zg-ai-kpi"><span>Impact Nodes</span><strong>' + escHtml(String(impactCount)) + '</strong></div>'
+					+ '<div class="zg-ai-kpi"><span>Edges</span><strong>' + escHtml(String(edgesCount)) + '</strong></div>';
+			}
 			var summary = document.getElementById('zg-ai-summary-table');
 			if (summary) {
 				summary.innerHTML = '' +
@@ -1235,6 +1276,7 @@ jQuery(document).ready(function() {
 		function loadLayer(layer) {
 			state.activeLayer = layer;
 			setActiveLayerButton(layer);
+			graphEl.classList.add('is-loading');
 			jQuery.ajax({
 				url: wfGraphDataUrl + (wfGraphDataUrl.indexOf('?') >= 0 ? '&' : '?') + 'eventid=' + encodeURIComponent(wfEventid) + '&layer=' + encodeURIComponent(layer),
 				type: 'GET',
@@ -1245,6 +1287,8 @@ jQuery(document).ready(function() {
 				updatePanel(payload);
 				renderGraph(layer);
 				loadSimilarIncidents();
+			}).always(function() {
+				graphEl.classList.remove('is-loading');
 			});
 		}
 
@@ -1261,6 +1305,20 @@ jQuery(document).ready(function() {
 				return;
 			}
 			startReplay();
+		});
+
+		jQuery(document).off('click.zgLayout', '.zg-layout-btn').on('click.zgLayout', '.zg-layout-btn', function() {
+			var mode = jQuery(this).attr('data-zg-layout') || 'cose';
+			state.layoutMode = mode;
+			jQuery('.zg-layout-btn').removeClass('is-active');
+			jQuery(this).addClass('is-active');
+			renderGraph(state.activeLayer);
+		});
+
+		jQuery('#zg-layout-fit').off('click').on('click', function() {
+			if (state.cy) {
+				state.cy.fit(undefined, 28);
+			}
 		});
 
 		if (typeof ResizeObserver !== 'undefined') {

@@ -349,16 +349,33 @@
 }
 
 [theme="dark-theme"] .zg-ai-toolbar-actions .zg-layer-btn.is-active,
-[theme="dark-theme"] .zg-ai-toolbar-actions .btn#zg-replay-toggle.is-active {
+[theme="dark-theme"] .zg-ai-toolbar-actions .btn#zg-replay-toggle.is-active,
+[theme="dark-theme"] .zg-ai-toolbar-layouts .zg-layout-btn.is-active {
 	background: linear-gradient(135deg, #2f90d8, #226896);
 	border-color: rgba(196, 228, 249, 0.8);
 	color: #ffffff;
 }
 
 [theme="dark-theme"] .zg-cytoscape-canvas {
-	background: radial-gradient(circle at 15% 20%, #f8fcff, #eef5fb);
+	background:
+		radial-gradient(circle at 15% 20%, #f8fcff, #eef5fb),
+		repeating-linear-gradient(0deg, rgba(52, 130, 186, 0.06), rgba(52, 130, 186, 0.06) 1px, transparent 1px, transparent 24px),
+		repeating-linear-gradient(90deg, rgba(52, 130, 186, 0.06), rgba(52, 130, 186, 0.06) 1px, transparent 1px, transparent 24px);
 	border-color: rgba(2, 117, 184, 0.22);
 	box-shadow: inset 0 0 0 1px rgba(143, 178, 207, 0.18), 0 12px 28px rgba(8, 20, 33, 0.1);
+}
+
+[theme="dark-theme"] .zg-ai-kpi {
+	background: linear-gradient(160deg, #f9fdff, #eef7fd);
+	border-color: rgba(43, 109, 153, 0.2);
+}
+
+[theme="dark-theme"] .zg-ai-kpi span {
+	color: #5a7e9a;
+}
+
+[theme="dark-theme"] .zg-ai-kpi strong {
+	color: #204a6e;
 }
 
 [theme="dark-theme"] .zg-ai-panel {
@@ -401,4 +418,108 @@
 
 [theme="dark-theme"] .zg-ai-table-empty {
 	color: #5f7e99;
+}
+
+[theme="dark-theme"] .zg-hostobs-header {
+	background: linear-gradient(145deg, #0f2338, #18344f);
+	color: #e5eff8;
+	border-color: rgba(124, 184, 230, 0.28);
+}
+
+[theme="dark-theme"] .zg-hostobs-subtitle,
+[theme="dark-theme"] .zg-hostobs-controls label {
+	color: #b7d1e5;
+}
+
+[theme="dark-theme"] .zg-hostobs-tag {
+	background: rgba(215, 237, 252, 0.2);
+	border-color: rgba(194, 226, 247, 0.35);
+	color: #dcedfa;
+}
+
+[theme="dark-theme"] .zg-hostobs-controls select {
+	background: #f5f9fd;
+	color: #19344c;
+	border-color: rgba(124, 184, 230, 0.5);
+}
+
+[theme="dark-theme"] .zg-hostobs-card,
+[theme="dark-theme"] .zg-hostobs-panel-card {
+	background: #ffffff;
+	border-color: rgba(43, 109, 153, 0.2);
+	box-shadow: 0 10px 24px rgba(8, 20, 33, 0.08);
+}
+
+[theme="dark-theme"] .zg-premium-map {
+	background: linear-gradient(170deg, #0e2b41 0%, #184b6d 45%, #2c6e93 100%);
+	border-color: rgba(24, 70, 103, 0.35);
+	color: #eaf5ff;
+}
+
+[theme="dark-theme"] .zg-premium-map-head {
+	border-bottom-color: rgba(198, 223, 244, 0.24);
+}
+
+[theme="dark-theme"] .zg-premium-map-subtitle,
+[theme="dark-theme"] .zg-premium-status,
+[theme="dark-theme"] .zg-premium-upload-title {
+	color: #cde5f8;
+}
+
+[theme="dark-theme"] .zg-premium-map-tools .zg-premium-layout-btn.is-active {
+	background: linear-gradient(140deg, #19a0ff, #1472b1);
+	color: #fff;
+	border-color: rgba(202, 232, 252, 0.85);
+}
+
+[theme="dark-theme"] .zg-premium-chat-row.user {
+	background: #f4fbff;
+	color: #173c58;
+	border-color: rgba(65, 148, 205, 0.35);
+}
+
+[theme="dark-theme"] .zg-premium-chat-row.ai {
+	background: rgba(7, 23, 37, 0.32);
+	color: #e7f4ff;
+	border-color: rgba(145, 199, 235, 0.3);
+}
+
+[theme="dark-theme"] .zg-premium-chat-form textarea,
+[theme="dark-theme"] .zg-premium-upload-form textarea {
+	background: #f8fcff;
+	color: #143247;
+	border-color: rgba(171, 213, 242, 0.45);
+}
+
+[theme="dark-theme"] .zg-premium-map-canvas-wrap {
+	border-color: rgba(179, 219, 246, 0.34);
+	background:
+		radial-gradient(circle at 14% 16%, #f8fdff, #d8edf9),
+		repeating-linear-gradient(0deg, rgba(48, 130, 188, 0.08), rgba(48, 130, 188, 0.08) 1px, transparent 1px, transparent 20px),
+		repeating-linear-gradient(90deg, rgba(48, 130, 188, 0.08), rgba(48, 130, 188, 0.08) 1px, transparent 1px, transparent 20px);
+	box-shadow: inset 0 0 0 1px rgba(145, 190, 221, 0.35);
+}
+
+[theme="dark-theme"] .zg-hostobs-card-title,
+[theme="dark-theme"] .zg-hostobs-panel-title {
+	color: #2b6d99;
+}
+
+[theme="dark-theme"] .zg-hostobs-summary,
+[theme="dark-theme"] .zg-hostobs-table td,
+[theme="dark-theme"] .zg-hostobs-timeline-row,
+[theme="dark-theme"] .zg-hostobs-empty {
+	color: #42627c;
+}
+
+[theme="dark-theme"] .zg-hostobs-table th {
+	color: #2a5f85;
+	background: #f4f9fd;
+}
+
+[theme="dark-theme"] .zg-hostobs-table th,
+[theme="dark-theme"] .zg-hostobs-table td,
+[theme="dark-theme"] .zg-hostobs-timeline-row {
+	border-bottom-color: rgba(43, 109, 153, 0.12);
+	border-color: rgba(43, 109, 153, 0.12);
 }
